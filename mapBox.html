@@ -20,7 +20,7 @@
   markers = [];
   dblLock = false;
   // mapboxgl.accessToken = '';
-	mapboxgl.accessToken = 'pk.eyJ1IjoiaG91YmlhbyIsImEiOiJjajdnNjVicDYxNHAzMndvMmI4NGgzaTZrIn0.ZvpHO1bVunIhgsBq_nVYFQ';
+  mapboxgl.accessToken = 'pk.eyJ1IjoiaG91YmlhbyIsImEiOiJjajdnNjVicDYxNHAzMndvMmI4NGgzaTZrIn0.ZvpHO1bVunIhgsBq_nVYFQ';
 
 
   // 地图缩放与量程对应关系
@@ -229,15 +229,6 @@
     console.log('marker dblclick handle', marker)
   }
 
-  // 计算两个点之间的距离
-  function calcDistance(from,to){
-    var f = turf.point(from)
-    var t = turf.point(to)
-    return turf.distance(f,t,{
-      units:'kilometers'
-    })
-  }
-
   function addMark(lngLat) {
     this.checkMarkersLimitOverflow()
     this.unSelectMarkerAll()
@@ -274,17 +265,45 @@
       units:'kilometers'
     })
     }
-    
   }
+
+  // 计算两个点之间的距离
+  function calcDistance(from,to) {
+    var f = turf.point(from)
+    var t = turf.point(to)
+    var distance = turf.distance(f,t,{
+      units:'kilometers'
+    })
+    distance = distance * 1000
+    return distance
+  }
+
+  // 计算两个点之间的角度
+  function calcBearing(from,to) {
+    var f = turf.point(from)
+    var t = turf.point(to)
+    var bearing =  turf.bearing(f,t,{
+      units:'kilometers'
+    })
+    bearing = bearing < 0? 360 + bearing: bearing
+    return bearing
+  }
+  
+  var distance = calcDistance([116.382068, 39.913359], [116.380746, 39.913335])
+  var bearing = calcBearing([116.382068, 39.913359], [116.380746, 39.913335])
+  console.log('distance', distance)
+  console.log('bearing', bearing)
+  
+
   
 </script>
 
 <style>
-	
+  
 </style>
 <style>
   body { margin: 0; padding: 0; }
-	#map { position: absolute; top: 0; bottom: 0; width: 100%; border:1px solid red;  }
+  #map { position: absolute; top: 0; bottom: 0; width: 100%; border:1px solid red;  }
 
   #map canvas {
     cursor: crosshair;
